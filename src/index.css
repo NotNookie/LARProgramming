@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-surface text-ink-soft font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-primary text-white;
+  }
+}
+
+@layer components {
+  /* Uppercase technical label */
+  .label-tech {
+    @apply font-mono text-label-sm uppercase tracking-[0.05em] text-slate;
+  }
+  /* Section container */
+  .container-tech {
+    @apply mx-auto w-full max-w-container px-4 md:px-16;
+  }
+  /* Primary CTA */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-strong;
+  }
+  /* Ghost / secondary CTA */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded border border-line px-6 py-3 font-semibold text-ink transition-colors hover:border-primary;
+  }
+  /* Card */
+  .card-tech {
+    @apply rounded-lg border border-line-soft bg-surface-container;
+  }
+}
