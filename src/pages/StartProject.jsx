@@ -76,7 +76,6 @@ export default function StartProject() {
         : form.timeline;
 
     const lines = [
-      "New project inquiry 👋",
       form.business && `Business: ${form.business}`,
       form.budget && `Budget: ${form.budget}`,
       timeline && `Timeline: ${timeline}`,
