@@ -4,16 +4,21 @@ import { openMessenger, MESSENGER_URL } from "../config";
 
 const BUDGETS = [
   "Just exploring",
-  "Under $500",
-  "$500 – $2,000",
-  "$2,000+",
+  "Under ₱10,000",
+  "₱10,000 – ₱30,000",
+  "₱30,000 – ₱50,000",
+  "₱50,000+",
 ];
+
+// Selecting this reveals a date picker.
+const PICK_DATE = "Pick a specific date";
 
 const TIMELINES = [
   "As soon as possible",
   "Within a month",
   "1 – 3 months",
   "No rush",
+  PICK_DATE,
 ];
 
 const BENEFITS = [
@@ -31,13 +36,30 @@ const STEPS = [
 ];
 
 const EMPTY = {
-  name: "",
-  email: "",
   business: "",
   details: "",
   budget: "",
   timeline: "",
+  targetDate: "",
 };
+
+// Today as a local YYYY-MM-DD (toISOString would use UTC and can be off by a day)
+function todayLocal() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split("T")[0];
+}
+
+// "2026-03-15" -> "March 15, 2026" (parsed as local time to avoid TZ drift)
+function formatDate(value) {
+  const [y, m, d] = value.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 export default function StartProject() {
   const [form, setForm] = useState(EMPTY);
@@ -48,13 +70,16 @@ export default function StartProject() {
   // Bundle the form into a prefilled Messenger message and open the chat.
   function handleSubmit(e) {
     e.preventDefault();
+    const timeline =
+      form.timeline === PICK_DATE
+        ? form.targetDate && `By ${formatDate(form.targetDate)}`
+        : form.timeline;
+
     const lines = [
       "New project inquiry 👋",
-      form.name && `Name: ${form.name}`,
-      form.email && `Email: ${form.email}`,
       form.business && `Business: ${form.business}`,
       form.budget && `Budget: ${form.budget}`,
-      form.timeline && `Timeline: ${form.timeline}`,
+      timeline && `Timeline: ${timeline}`,
       form.details && `\nDetails:\n${form.details}`,
     ].filter(Boolean);
     openMessenger(lines.join("\n"));
@@ -84,29 +109,9 @@ export default function StartProject() {
           <Corner className="left-2 top-2" />
           <Corner className="bottom-2 right-2 rotate-180" />
 
-          {/* About you */}
-          <SectionHead icon="user" label="// About You" />
-          <div className="grid gap-6 md:grid-cols-2">
-            <Field label="Your Name">
-              <input
-                type="text"
-                value={form.name}
-                onChange={update("name")}
-                placeholder="Juan Dela Cruz"
-                className={inputClass}
-              />
-            </Field>
-            <Field label="Email Address">
-              <input
-                type="email"
-                value={form.email}
-                onChange={update("email")}
-                placeholder="you@email.com"
-                className={inputClass}
-              />
-            </Field>
-          </div>
-          <Field label="Business Name (optional)" className="mt-6">
+          {/* Your business */}
+          <SectionHead icon="user" label="// Your Business" />
+          <Field label="Business Name (optional)">
             <input
               type="text"
               value={form.business}
@@ -140,15 +145,27 @@ export default function StartProject() {
                 ))}
               </Select>
             </Field>
-            <Field label="When do you need it?">
-              <Select value={form.timeline} onChange={update("timeline")} placeholder="Choose an option...">
-                {TIMELINES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </Select>
-            </Field>
+            <div>
+              <Field label="When do you need it?">
+                <Select value={form.timeline} onChange={update("timeline")} placeholder="Choose an option...">
+                  {TIMELINES.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+              {form.timeline === PICK_DATE && (
+                <input
+                  type="date"
+                  value={form.targetDate}
+                  onChange={update("targetDate")}
+                  min={todayLocal()}
+                  aria-label="Target date"
+                  className={`${inputClass} mt-3`}
+                />
+              )}
+            </div>
           </div>
 
           {/* Actions */}
