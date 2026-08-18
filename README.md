@@ -1,7 +1,5 @@
 # LARProgramming
 
-Hi
-
 Marketing landing site for **Larprogramming** — a web development studio building
 fast, modern, custom websites for small businesses and brands.
 
