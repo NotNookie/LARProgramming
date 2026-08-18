@@ -5,6 +5,7 @@ fast, modern, custom websites for small businesses and brands.
 
 Built with **Vite + React + Tailwind CSS**.
 
+
 ## Pages
 
 - **Home** — hero, launch offer, and "What We Do" overview
@@ -29,3 +30,4 @@ the site.
 ## Tech stack
 
 React - Vite - Tailwind CSS - React Router
+
